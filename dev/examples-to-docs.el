@@ -31,16 +31,21 @@
 
 (defun example-to-string (example)
   (-let [(actual sym expected) example]
-    (--> (cond
-          ((eq sym '=>) (format "=> %S" expected))
-          ((eq sym '~>) (format "~> %S" expected))
-          ((eq sym '!!>) "Error")
-          ((error "Invalid test case: %S" example)))
-      (format "%S ;; %s" actual it)
-      (replace-regexp-in-string "\\\\\\?" "?" it t t)
-      (replace-regexp-in-string "\n" "\\n" it t t)
-      (replace-regexp-in-string "\t" "\\t" it t t)
-      (replace-regexp-in-string "\r" "\\r" it t t))))
+    (with-output-to-string
+      (with-current-buffer standard-output
+        (prin1 actual)
+        (insert " ;; ")
+        (cond ((memq sym '(=> ~>))
+               (princ sym)
+               (insert ?\s)
+               (prin1 expected))
+              ((eq sym '!!>)
+               (insert "Error"))
+              ((error "Invalid test case: %S" example)))
+        (goto-char (point-min))
+        (while (search-forward "\\?" nil t)
+          (backward-char)
+          (delete-char -1))))))
 
 (defun docs--signature (function)
   "Given FUNCTION (a symbol), return its argument list.
