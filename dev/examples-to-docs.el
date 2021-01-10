@@ -31,6 +31,9 @@
 
 (defun example-to-string (example)
   (-let [(actual sym expected) example]
+    ;; Unquote result.
+    (when (eq (car-safe expected) 'quote)
+      (setq expected (cadr expected)))
     (with-output-to-string
       (with-current-buffer standard-output
         (prin1 actual)
