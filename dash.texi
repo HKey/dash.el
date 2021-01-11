@@ -4387,8 +4387,8 @@ See @var{srfi-26} for detailed description.
     @result{} '(6 4 0.2)
 @end group
 @group
-(-map (-cut <> 1 2 3) (list 'list 'vector 'string))
-    @result{} '((1 2 3) [1 2 3] "")
+(-map (-cut <> 97 98) (list #'list #'vector #'string))
+    @result{} '((97 98) [97 98] "ab")
 @end group
 @end example
 @end defmac

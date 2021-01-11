@@ -29,11 +29,16 @@
 
 (defvar functions ())
 
+(defun dash--fix-quotes ()
+  "Un/escape characters in the current buffer for legibility.
+- Unescape \\? in symbols like `-any?'.
+- Prefer () over nil for the empty list."
+  (goto-char (point-min))
+  (while (re-search-forward "\\(\\\\\\?\\)\\|'\\_<nil\\_>" nil t)
+    (replace-match (if (match-beginning 1) "?" "()") t t)))
+
 (defun example-to-string (example)
   (-let [(actual sym expected) example]
-    ;; Unquote result.
-    (when (eq (car-safe expected) 'quote)
-      (setq expected (cadr expected)))
     (with-output-to-string
       (with-current-buffer standard-output
         (prin1 actual)
@@ -41,18 +46,15 @@
         (cond ((memq sym '(=> ~>))
                (princ sym)
                (insert ?\s)
-               (prin1 expected))
+               ;; Unquote result unless it's the empty list.
+               (prin1 (if (and (eq (car-safe expected) 'quote)
+                               (not (equal expected ''())))
+                          (cadr expected)
+                        expected)))
               ((eq sym '!!>)
                (insert "Error"))
               ((error "Invalid test case: %S" example)))
-        (goto-char (point-min))
-        (while (re-search-forward "\\\\\\?\\|\\([^\n[:print:]]\\)" nil t)
-          (if (match-beginning 1)
-              ;; Escape control characters such as ?\^A.
-              (let ((c (string-to-char (match-string 1))))
-                (replace-match (concat "\\" (text-char-description c)) t t))
-            ;; Unescape the \? in symbols like -any?.
-            (replace-match "?" t t)))))))
+        (dash--fix-quotes)))))
 
 (defun docs--signature (function)
   "Given FUNCTION (a symbol), return its argument list.
@@ -155,29 +157,6 @@ FUNCTION may reference an elisp function, alias, macro or a subr."
           (signature (cadr function)))
       (format "* [%s](#%s) `%s`" command-name (github-id command-name signature) signature))))
 
-(defun simplify-quotes ()
-  (goto-char (point-min))
-  (while (re-search-forward (rx (or "'nil" "(quote nil)")) nil t)
-    (replace-match "'()" t t))
-  (goto-char (point-min))
-  (while (search-forward "(quote " nil t)
-    (forward-char -7)
-    (let ((p (point)))
-      (forward-sexp 1)
-      (delete-char -1)
-      (goto-char p)
-      (delete-char 7)
-      (insert "'")))
-  (goto-char (point-min))
-  (while (search-forward "(function " nil t)
-    (forward-char -10)
-    (let ((p (point)))
-      (forward-sexp 1)
-      (delete-char -1)
-      (goto-char p)
-      (delete-char 10)
-      (insert "#'"))))
-
 (defun goto-and-remove (s)
   (goto-char (point-min))
   (search-forward s)
@@ -201,8 +180,6 @@ FUNCTION may reference an elisp function, alias, macro or a subr."
 
       (dolist (pkg '(dash dash-functional))
         (goto-and-replace-all (format "[[ %s-version ]]" pkg)
-                              (lm-version (format "%s.el" pkg))))
-
-      (simplify-quotes))))
+                              (lm-version (format "%s.el" pkg)))))))
 
 ;;; examples-to-docs.el ends here

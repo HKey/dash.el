@@ -1559,7 +1559,7 @@ value rather than consuming a list to produce a single value."
     (defexamples -cut
       (funcall (-cut list 1 <> 3 <> 5) 2 4) => '(1 2 3 4 5)
       (-map (-cut funcall <> 5) '(1+ 1- (lambda (x) (/ 1.0 x)))) => '(6 4 0.2)
-      (-map (-cut <> 1 2 3) (list 'list 'vector 'string)) => '((1 2 3) [1 2 3] "\^A\^B\^C")
+      (-map (-cut <> ?a ?b) (list #'list #'vector #'string)) => '((?a ?b) [?a ?b] "ab")
       (-filter (-cut < <> 5) '(1 3 5 7 9)) => '(1 3))
 
     (defexamples -not

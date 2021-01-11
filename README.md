@@ -1062,7 +1062,7 @@ Counts the number of items in `list` where (`pred` item) is non-nil.
 Return the sum of `list`.
 
 ```el
-(-sum '()) ;; => 0
+(-sum ()) ;; => 0
 (-sum '(1)) ;; => 1
 (-sum '(1 2 3 4)) ;; => 10
 ```
@@ -1083,7 +1083,7 @@ Return a list with running sums of items in `list`.
 Return the product of `list`.
 
 ```el
-(-product '()) ;; => 1
+(-product ()) ;; => 1
 (-product '(1)) ;; => 1
 (-product '(1 2 3 4)) ;; => 24
 ```
@@ -1484,7 +1484,7 @@ The last groups may contain less than `n` items.
 Apply `fn` to each item in `list`, splitting it each time `fn` returns a new value.
 
 ```el
-(-partition-by 'even? '()) ;; => nil
+(-partition-by 'even? ()) ;; => ()
 (-partition-by 'even? '(1 1 2 2 2 3 4 6 8)) ;; => ((1 1) (2 2 2) (3) (4 6 8))
 (--partition-by (< it 3) '(1 2 3 4 3 2 1)) ;; => ((1 2) (3 4 3) (2 1))
 ```
@@ -1507,7 +1507,7 @@ other value (the body).
 Partition directly after each time `pred` is true on an element of `list`.
 
 ```el
-(-partition-after-pred #'odd? '()) ;; => nil
+(-partition-after-pred #'odd? ()) ;; => ()
 (-partition-after-pred #'odd? '(1)) ;; => ((1))
 (-partition-after-pred #'odd? '(0 1)) ;; => ((0 1))
 ```
@@ -1517,7 +1517,7 @@ Partition directly after each time `pred` is true on an element of `list`.
 Partition directly before each time `pred` is true on an element of `list`.
 
 ```el
-(-partition-before-pred #'odd? '()) ;; => nil
+(-partition-before-pred #'odd? ()) ;; => ()
 (-partition-before-pred #'odd? '(1)) ;; => ((1))
 (-partition-before-pred #'odd? '(0 1)) ;; => ((0) (1))
 ```
@@ -1527,7 +1527,7 @@ Partition directly before each time `pred` is true on an element of `list`.
 Partition directly before each time `item` appears in `list`.
 
 ```el
-(-partition-before-item 3 '()) ;; => nil
+(-partition-before-item 3 ()) ;; => ()
 (-partition-before-item 3 '(1)) ;; => ((1))
 (-partition-before-item 3 '(3)) ;; => ((3))
 ```
@@ -1537,7 +1537,7 @@ Partition directly before each time `item` appears in `list`.
 Partition directly after each time `item` appears in `list`.
 
 ```el
-(-partition-after-item 3 '()) ;; => nil
+(-partition-after-item 3 ()) ;; => ()
 (-partition-after-item 3 '(1)) ;; => ((1))
 (-partition-after-item 3 '(3)) ;; => ((3))
 ```
@@ -1548,7 +1548,7 @@ Separate `list` into an alist whose keys are `fn` applied to the
 elements of `list`.  Keys are compared by `equal`.
 
 ```el
-(-group-by 'even? '()) ;; => nil
+(-group-by 'even? ()) ;; => ()
 (-group-by 'even? '(1 1 2 2 2 3 4 6 8)) ;; => ((nil 1 1 3) (t 2 2 2 4 6 8))
 (--group-by (car (split-string it "/")) '("a/b" "c/d" "a/e")) ;; => (("a" "a/b" "a/e") ("c" "c/d"))
 ```
@@ -1657,7 +1657,7 @@ or with `-compare-fn` if that's non-nil.
 
 ```el
 (-union '(1 2 3) '(3 4 5)) ;; => (1 2 3 4 5)
-(-union '(1 2 3 4) '()) ;; => (1 2 3 4)
+(-union '(1 2 3 4) ()) ;; => (1 2 3 4)
 (-union '(1 1 2 2) '(3 2 1)) ;; => (1 1 2 2 3)
 ```
 
@@ -1668,7 +1668,7 @@ The test for equality is done with `equal`,
 or with `-compare-fn` if that's non-nil.
 
 ```el
-(-difference '() '()) ;; => nil
+(-difference () ()) ;; => ()
 (-difference '(1 2 3) '(4 5 6)) ;; => (1 2 3)
 (-difference '(1 2 3 4) '(3 4 5 6)) ;; => (1 2)
 ```
@@ -1680,8 +1680,8 @@ The test for equality is done with `equal`,
 or with `-compare-fn` if that's non-nil.
 
 ```el
-(-intersection '() '()) ;; => nil
-(-intersection '(1 2 3) '(4 5 6)) ;; => nil
+(-intersection () ()) ;; => ()
+(-intersection '(1 2 3) '(4 5 6)) ;; => ()
 (-intersection '(1 2 3 4) '(3 4 5 6)) ;; => (3 4)
 ```
 
@@ -1690,7 +1690,7 @@ or with `-compare-fn` if that's non-nil.
 Return the power set of `list`.
 
 ```el
-(-powerset '()) ;; => (nil)
+(-powerset ()) ;; => (nil)
 (-powerset '(x y z)) ;; => ((x y z) (x y) (x z) (x) (y z) (y) (z) nil)
 ```
 
@@ -1699,7 +1699,7 @@ Return the power set of `list`.
 Return the permutations of `list`.
 
 ```el
-(-permutations '()) ;; => (nil)
+(-permutations ()) ;; => (nil)
 (-permutations '(1 2)) ;; => ((1 2) (2 1))
 (-permutations '(a b c)) ;; => ((a b c) (a c b) (b a c) (b c a) (c a b) (c b a))
 ```
@@ -1713,7 +1713,7 @@ or with `-compare-fn` if that's non-nil.
 Alias: `-uniq`
 
 ```el
-(-distinct '()) ;; => nil
+(-distinct ()) ;; => ()
 (-distinct '(1 2 2 4)) ;; => (1 2 4)
 (-distinct '(t t t)) ;; => (t)
 ```
@@ -1778,7 +1778,7 @@ If `elements` is non nil, append these to the list as well.
 Return a new list of all elements in `list` separated by `sep`.
 
 ```el
-(-interpose "-" '()) ;; => nil
+(-interpose "-" ()) ;; => ()
 (-interpose "-" '("a")) ;; => ("a")
 (-interpose "-" '("a" "b" "c")) ;; => ("a" "-" "b" "-" "c")
 ```
@@ -1913,7 +1913,7 @@ Appends `fill-value` to the end of each list in `lists` such that they
 will all have the same length.
 
 ```el
-(-pad 0 '()) ;; => (nil)
+(-pad 0 ()) ;; => (nil)
 (-pad 0 '(1)) ;; => ((1))
 (-pad 0 '(1 2 3) '(4 5)) ;; => ((1 2 3) (4 5 0))
 ```
@@ -2757,7 +2757,7 @@ Destructive: Set `cdr` to the cons of `car` and `cdr`.
 Destructive: Set `list` to the cdr of `list`.
 
 ```el
-(let ((l '(3))) (!cdr l) l) ;; => nil
+(let ((l '(3))) (!cdr l) l) ;; => ()
 (let ((l '(3 5))) (!cdr l) l) ;; => (5)
 ```
 
@@ -2876,7 +2876,7 @@ See `srfi-26` for detailed description.
 ```el
 (funcall (-cut list 1 <> 3 <> 5) 2 4) ;; => (1 2 3 4 5)
 (-map (-cut funcall <> 5) '(1+ 1- (lambda (x) (/ 1.0 x)))) ;; => (6 4 0.2)
-(-map (-cut <> 1 2 3) (list 'list 'vector 'string)) ;; => ((1 2 3) [1 2 3] "\^A\^B\^C")
+(-map (-cut <> 97 98) (list #'list #'vector #'string)) ;; => ((97 98) [97 98] "ab")
 ```
 
 #### -not `(pred)`
