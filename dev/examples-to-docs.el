@@ -46,9 +46,13 @@
                (insert "Error"))
               ((error "Invalid test case: %S" example)))
         (goto-char (point-min))
-        (while (search-forward "\\?" nil t)
-          (backward-char)
-          (delete-char -1))))))
+        (while (re-search-forward "\\\\\\?\\|\\([^\n[:print:]]\\)" nil t)
+          (if (match-beginning 1)
+              ;; Escape control characters such as ?\^A.
+              (let ((c (string-to-char (match-string 1))))
+                (replace-match (concat "\\" (text-char-description c)) t t))
+            ;; Unescape the \? in symbols like -any?.
+            (replace-match "?" t t)))))))
 
 (defun docs--signature (function)
   "Given FUNCTION (a symbol), return its argument list.
